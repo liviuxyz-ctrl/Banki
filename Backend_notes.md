@@ -1,9 +1,17 @@
+```ps1
 $env:APP_KEYS = 'mySecretKey1,mySecretKey2'
 $env:ADMIN_JWT_SECRET = 'yourAdminJWTSecret'
 $env:API_TOKEN_SALT = 'yourApiTokenSalt'
 $env:TRANSFER_TOKEN_SALT = 'yourTransferTokenSalt'
 $env:FLAG_NPS = 'true'
 $env:FLAG_PROMOTE_EE = 'true'
+```
+# Replace the ip with the 
+## 
+
+```ps1
+Get-NetIPAddress | Where-Object { $_.AddressFamily -eq 'IPv4' -and $_.PrefixOrigin -eq 'Dhcp' } | Format-Table
+```
 
 // Example 
 
@@ -15,11 +23,14 @@ $env:FLAG_PROMOTE_EE = 'true'
 
 [//]: # ($env:APP_KEYS = "D1f8S5z2R9q7L3p6, G4m1N8b5X2d7K9p6")
 
-
 # Print out the values to verify they've been set:
+```ps1```
+
 Write-Host "APP_KEYS: $env:APP_KEYS"
 Write-Host "ADMIN_JWT_SECRET: $env:ADMIN_JWT_SECRET"
 Write-Host "API_TOKEN_SALT: $env:API_TOKEN_SALT"
 Write-Host "TRANSFER_TOKEN_SALT: $env:TRANSFER_TOKEN_SALT"
 Write-Host "FLAG_NPS: $env:FLAG_NPS"
 Write-Host "FLAG_PROMOTE_EE: $env:FLAG_PROMOTE_EE"
+```
+
