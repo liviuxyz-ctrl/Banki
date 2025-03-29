@@ -1,0 +1,22 @@
+{
+  "kind": "collectionType",
+  "collectionName": "accounts",
+  "info": {
+    "singularName": "account",
+    "pluralName": "accounts",
+    "displayName": "Account"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "attributes": {
+    "IBANN": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "balance": {
+      "type": "decimal"
+    }
+  }
+}
