@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Button, Text, StyleSheet, Modal, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { AUTH_ENDPOINT } from '../constants';
+import {createTestAccount} from "../test/tester";
 
 export default function SingleButtonLogin() {
     const [modalVisible, setModalVisible] = useState(false);
@@ -57,6 +58,7 @@ export default function SingleButtonLogin() {
     return (
         <View style={styles.container}>
             <Button title="Send Request" onPress={handleRequest} />
+            <Button title={"create"} onPress={createTestAccount} />
 
             <Modal
                 visible={modalVisible}
