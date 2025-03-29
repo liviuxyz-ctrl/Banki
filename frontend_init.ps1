@@ -50,12 +50,19 @@ try {
     npm install @react-navigation/native @react-navigation/stack axios
 
     # 4. Configure Reanimated (silent overwrite)
-    @'
+    $content = @'
 module.exports = {
   presets: ['babel-preset-expo'],
   plugins: ['react-native-reanimated/plugin']
 }
-'@ | Out-File -FilePath "babel.config.js" -Force
+'@
+
+    # Create an instance of UTF8Encoding without BOM
+    $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+
+    # Write the content to babel.config.js with UTF-8 encoding (without BOM)
+    [System.IO.File]::WriteAllText("babel.config.js", $content, $utf8NoBom)
+
 
     Write-Host "✅ Frontend setup completed!" -ForegroundColor Green
 }
