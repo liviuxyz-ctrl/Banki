@@ -1,7 +1,7 @@
 // config.js
 
 // Base URL for your Strapi backend (replace with your local IP and port)
-export const BASE_URL = "http://10.145.192.206:1337";
+export const BASE_URL = "http://10.254.141.206:1337";
 
 // API endpoints
 export const AUTH_ENDPOINT = `${BASE_URL}/api/auth/local`;

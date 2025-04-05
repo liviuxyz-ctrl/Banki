@@ -369,34 +369,39 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
-export interface ApiAccountAccount extends Struct.CollectionTypeSchema {
-  collectionName: 'accounts';
+export interface ApiBankAccountBankAccount extends Struct.CollectionTypeSchema {
+  collectionName: 'bank_accounts';
   info: {
-    displayName: 'Account';
-    pluralName: 'accounts';
-    singularName: 'account';
+    description: '';
+    displayName: 'BankAccount ';
+    pluralName: 'bank-accounts';
+    singularName: 'bank-account';
   };
   options: {
     draftAndPublish: true;
   };
   attributes: {
-    balance: Schema.Attribute.Decimal;
+    balance: Schema.Attribute.Decimal & Schema.Attribute.DefaultTo<0>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    IBANN: Schema.Attribute.String &
+    IBAN: Schema.Attribute.String &
       Schema.Attribute.Required &
       Schema.Attribute.Unique;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
-      'api::account.account'
+      'api::bank-account.bank-account'
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    users_permissions_user: Schema.Attribute.Relation<
+      'manyToOne',
+      'plugin::users-permissions.user'
+    >;
   };
 }
 
@@ -858,6 +863,10 @@ export interface PluginUsersPermissionsUser
     timestamps: true;
   };
   attributes: {
+    bank_accounts: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::bank-account.bank-account'
+    >;
     blocked: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
     confirmationToken: Schema.Attribute.String & Schema.Attribute.Private;
     confirmed: Schema.Attribute.Boolean & Schema.Attribute.DefaultTo<false>;
@@ -909,7 +918,7 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
-      'api::account.account': ApiAccountAccount;
+      'api::bank-account.bank-account': ApiBankAccountBankAccount;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
       'plugin::i18n.locale': PluginI18NLocale;

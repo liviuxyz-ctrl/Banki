@@ -1,6 +1,16 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, ActivityIndicator, Modal, TouchableOpacity } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    Button,
+    StyleSheet,
+    ActivityIndicator,
+    Modal,
+    TouchableOpacity
+} from 'react-native';
 import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { AUTH_ENDPOINT } from '../constants';
 
 export default function LoginScreen({ navigation }) {
@@ -8,14 +18,12 @@ export default function LoginScreen({ navigation }) {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
 
-    // Modal state variables
     const [modalVisible, setModalVisible] = useState(false);
-    const [modalType, setModalType] = useState(''); // "success" or "error"
+    const [modalType, setModalType] = useState('');
     const [modalMessage, setModalMessage] = useState('');
 
     const handleLogin = async () => {
         if (!identifier || !password) {
-            // Directly show an error modal if fields are missing
             setModalType('error');
             setModalMessage('Please enter both identifier and password.');
             setModalVisible(true);
@@ -23,40 +31,32 @@ export default function LoginScreen({ navigation }) {
         }
 
         setLoading(true);
-        console.log('Attempting login with identifier:', identifier);
-
         try {
             const response = await axios.post(AUTH_ENDPOINT, {
                 identifier,
                 password,
             });
 
-            console.log('Login response:', response.data);
             const { jwt, user } = response.data;
-            console.log('JWT:', jwt);
-            console.log('User:', user);
 
-            // On success, set up a success modal.
+            // ✅ Save token and user to AsyncStorage
+            await AsyncStorage.setItem('token', jwt);
+            await AsyncStorage.setItem('user', JSON.stringify(user));
+
+            // ✅ Show success modal
             setModalType('success');
             setModalMessage('You have been logged in successfully!');
             setModalVisible(true);
         } catch (error) {
-            console.error('Login error:', error);
             let errorMsg;
 
             if (error.response) {
-                console.error('Error Response Data:', error.response.data);
-                console.error('Error Response Status:', error.response.status);
-                console.error('Error Response Headers:', error.response.headers);
-                errorMsg = `Server responded with status ${error.response.status}: ${JSON.stringify(error.response.data)}`;
+                errorMsg = `Server error (${error.response.status}): ${JSON.stringify(error.response.data)}`;
             } else if (error.request) {
-                console.error('Error Request:', error.request);
-                errorMsg = 'Network error: No response received from the server.';
+                errorMsg = 'Network error: No response received.';
             } else {
-                console.error('Error Message:', error.message);
-                errorMsg = `Error setting up request: ${error.message}`;
+                errorMsg = `Request error: ${error.message}`;
             }
-            console.error('Error as JSON:', JSON.stringify(error, null, 2));
 
             setModalType('error');
             setModalMessage(errorMsg);
@@ -66,7 +66,6 @@ export default function LoginScreen({ navigation }) {
         }
     };
 
-    // Handler for modal OK button. If success, navigate; otherwise just close the modal.
     const handleModalClose = () => {
         setModalVisible(false);
         if (modalType === 'success') {
@@ -91,13 +90,13 @@ export default function LoginScreen({ navigation }) {
                 onChangeText={setPassword}
                 value={password}
             />
+
             {loading ? (
                 <ActivityIndicator size="large" />
             ) : (
                 <Button title="Log In" onPress={handleLogin} />
             )}
 
-            {/* Modal for success and error messages */}
             <Modal
                 visible={modalVisible}
                 transparent={true}
@@ -115,7 +114,14 @@ export default function LoginScreen({ navigation }) {
                             {modalType === 'success' ? 'Login Successful' : 'Login Failed'}
                         </Text>
                         <Text style={styles.modalMessage}>{modalMessage}</Text>
-                        <TouchableOpacity style={modalType === 'success' ? styles.modalButtonSuccess : styles.modalButtonError} onPress={handleModalClose}>
+                        <TouchableOpacity
+                            style={
+                                modalType === 'success'
+                                    ? styles.modalButtonSuccess
+                                    : styles.modalButtonError
+                            }
+                            onPress={handleModalClose}
+                        >
                             <Text style={styles.modalButtonText}>OK</Text>
                         </TouchableOpacity>
                     </View>
@@ -148,7 +154,7 @@ const styles = StyleSheet.create({
     },
     modalContainer: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)', // semi-transparent background
+        backgroundColor: 'rgba(0,0,0,0.5)',
         justifyContent: 'center',
         alignItems: 'center',
     },
