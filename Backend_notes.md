@@ -34,3 +34,5 @@ Write-Host "FLAG_NPS: $env:FLAG_NPS"
 Write-Host "FLAG_PROMOTE_EE: $env:FLAG_PROMOTE_EE"
 ```
 
+npm run strapi admin:create-user --firstname=YourFirstName --lastname=YourLastName --email=YourEmail --password=NewPassword
+

@@ -22,6 +22,10 @@ export default function LoginScreen({ navigation }) {
     const [modalType, setModalType] = useState('');
     const [modalMessage, setModalMessage] = useState('');
 
+    // new: hold JWT and user to pass later
+    const [storedJwt, setStoredJwt] = useState('');
+    const [storedUser, setStoredUser] = useState(null);
+
     const handleLogin = async () => {
         if (!identifier || !password) {
             setModalType('error');
@@ -39,11 +43,13 @@ export default function LoginScreen({ navigation }) {
 
             const { jwt, user } = response.data;
 
-            // ✅ Save token and user to AsyncStorage
             await AsyncStorage.setItem('token', jwt);
             await AsyncStorage.setItem('user', JSON.stringify(user));
 
-            // ✅ Show success modal
+            // save jwt and user for redirect
+            setStoredJwt(jwt);
+            setStoredUser(user);
+
             setModalType('success');
             setModalMessage('You have been logged in successfully!');
             setModalVisible(true);
@@ -69,7 +75,11 @@ export default function LoginScreen({ navigation }) {
     const handleModalClose = () => {
         setModalVisible(false);
         if (modalType === 'success') {
-            navigation.navigate('Dashboard');
+            if (storedUser && storedUser.isBankAdmin === true) {
+                navigation.navigate('AdminDashboard', { token: storedJwt });
+            } else {
+                navigation.navigate('Dashboard', { token: storedJwt });
+            }
         }
     };
 

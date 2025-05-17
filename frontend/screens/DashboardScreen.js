@@ -120,13 +120,13 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     iban: {
-        fontSize: 16,
+        fontSize: 12,
         fontWeight: 'bold',
         color: '#192a56',
         marginBottom: 4,
     },
     balance: {
-        fontSize: 16,
+        fontSize: 14,
         color: '#27ae60',
     },
     noData: {
